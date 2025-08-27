@@ -1,0 +1,98 @@
+Código usado para gerar as tabelas e relacionamentos da print no site:
+https://dbdiagram.io/home
+
+// --- Enums ---
+enum UserRole {
+  ADMIN
+  WAITER
+  COOK
+}
+
+enum TableStatus {
+  AVAILABLE
+  OCCUPIED
+  RESERVED
+}
+
+enum OrderStatus {
+  OPEN
+  CLOSED
+  PAID
+}
+
+enum OrderItemStatus {
+  PENDING
+  PREPARING
+  READY
+  DELIVERED
+}
+
+
+// --- Tables ---
+Table users {
+  id int [pk, increment]
+  full_name varchar(255) [not null]
+  email varchar(255) [unique, not null]
+  password_hash varchar(255) [not null]
+  role UserRole [not null]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table categories {
+  id int [pk, increment]
+  name varchar(100) [unique, not null]
+  description text
+}
+
+Table menu_items {
+  id int [pk, increment]
+  category_id int [not null]
+  name varchar(255) [not null]
+  description text
+  price decimal(10, 2) [not null]
+  is_available boolean [default: true]
+  created_at timestamp [default: `now()`]
+  updated_at timestamp [default: `now()`]
+}
+
+Table recipes {
+  id int [pk, increment]
+  menu_item_id int [unique, not null]
+  instructions text [not null]
+  prep_time_minutes int
+}
+
+Table restaurant_tables {
+  id int [pk, increment]
+  table_number int [unique, not null]
+  status TableStatus [not null]
+}
+
+Table orders {
+  id int [pk, increment]
+  table_id int [not null]
+  waiter_id int [not null]
+  status OrderStatus [not null]
+  total_amount decimal(10, 2)
+  created_at timestamp [default: `now()`]
+  closed_at timestamp
+}
+
+Table order_items {
+  id int [pk, increment]
+  order_id int [not null]
+  menu_item_id int [not null]
+  quantity int [not null, default: 1]
+  price_at_order decimal(10, 2) [not null]
+  status OrderItemStatus [not null]
+}
+
+
+// --- Relationships ---
+Ref: users.id < orders.waiter_id
+Ref: categories.id < menu_items.category_id
+Ref: menu_items.id - recipes.menu_item_id // One-to-One relationship
+Ref: restaurant_tables.id < orders.table_id
+Ref: orders.id < order_items.order_id
+Ref: menu_items.id < order_items.menu_item_id
