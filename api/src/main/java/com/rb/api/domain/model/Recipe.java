@@ -33,7 +33,7 @@ public class Recipe {
     @Column(nullable = false)
     private int prepTimeMinutes;
 
-    
+
     public Recipe(MenuItem menuItem, String instructions, int prepTimeMinutes) {
         this.menuItem = menuItem;
         this.instructions = instructions;
