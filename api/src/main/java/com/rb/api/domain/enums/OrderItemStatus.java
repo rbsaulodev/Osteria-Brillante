@@ -1,4 +1,4 @@
-package com.rb.api.domain.model;
+package com.rb.api.domain.enums;
 
 import lombok.Getter;
 
@@ -7,7 +7,7 @@ public enum OrderItemStatus {
     PENDING("Pendente"),
     PREPARING("Preparando"),
     READY("Pronto"),
-    DELIVERD("Entregue");
+    DELIVERED("Entregue");
 
     private final String displayName;
 

@@ -1,5 +1,8 @@
 package com.rb.api.domain.model;
 
+import com.rb.api.domain.enums.OrderItemStatus;
+import com.rb.api.domain.enums.OrderStatus;
+import com.rb.api.domain.enums.PaymentMethod;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -36,6 +39,10 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
+    @OneToMany(cascade = CascadeType.ALL)
+    @JoinColumn(name = "order_id")
+    private List<Payment> payments = new ArrayList<>();
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private OrderStatus status;
@@ -60,15 +67,33 @@ public class Order {
 
     public void addItem(MenuItem menuItem, int quantity) {
         if (this.status != OrderStatus.OPEN) {
-            throw new IllegalStateException("Não é possível adicionar itens a um pedido que não está aberto.");
+            throw new IllegalStateException("O pedido precisa estar aberto para adicionar novos itens.");
         }
         OrderItem newItem = new OrderItem(this, menuItem, quantity);
         this.items.add(newItem);
         recalculateTotal();
+    }
 
-        if(this.status == OrderStatus.PAID){
-            this.status = OrderStatus.OPEN;
+    public void registerPayment(BigDecimal amount, PaymentMethod method) {
+        if (this.status == OrderStatus.PAID) {
+            throw new IllegalStateException("Este pedido já está totalmente pago.");
         }
+        if (amount.compareTo(getBalance()) > 0) {
+            throw new IllegalArgumentException("O valor do pagamento não pode ser maior que o saldo devedor.");
+        }
+
+        this.payments.add(new Payment(amount, method));
+
+        if (getBalance().compareTo(BigDecimal.ZERO) == 0) {
+            this.status = OrderStatus.PAID;
+        }
+    }
+
+    public BigDecimal getBalance() {
+        BigDecimal totalPaid = this.payments.stream()
+                .map(Payment::getAmount)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+        return this.totalAmount.subtract(totalPaid);
     }
 
     public void closeOrder() {
@@ -76,13 +101,6 @@ public class Order {
             throw new IllegalStateException("Apenas pedidos abertos podem ser fechados.");
         }
         this.status = OrderStatus.CLOSED;
-    }
-
-    public void markAsPaid() {
-        if (this.status != OrderStatus.CLOSED) {
-            throw new IllegalStateException("Apenas pedidos fechados podem ser marcados como pagos.");
-        }
-        this.status = OrderStatus.PAID;
     }
 
     public void reopen() {
@@ -96,5 +114,48 @@ public class Order {
         this.totalAmount = this.items.stream()
                 .map(item -> item.getPriceAtOrder().multiply(new BigDecimal(item.getQuantity())))
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
+    }
+
+    public void removeItem(UUID orderItemId) {
+        if (this.status != OrderStatus.OPEN) {
+            throw new IllegalStateException("Não é possível remover itens de um pedido que não está aberto.");
+        }
+        this.items.removeIf(item -> item.getId().equals(orderItemId));
+        recalculateTotal();
+    }
+
+    public void updateItemQuantity(UUID orderItemId, int newQuantity) {
+        if (this.status != OrderStatus.OPEN) {
+            throw new IllegalStateException("Não é possível alterar a quantidade de itens de um pedido que não está aberto.");
+        }
+        if (newQuantity <= 0) {
+            throw new IllegalArgumentException("A nova quantidade deve ser positiva. Para remover, use o método removeItem.");
+        }
+
+        OrderItem itemToUpdate = findItemOrFail(orderItemId);
+        itemToUpdate.changeQuantity(newQuantity);
+        recalculateTotal();
+    }
+
+    private OrderItem findItemOrFail(UUID orderItemId) {
+        return this.items.stream()
+                .filter(item -> item.getId().equals(orderItemId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Item não encontrado no pedido."));
+    }
+
+    public void markItemAsPreparing(UUID orderItemId) {
+        OrderItem item = findItemOrFail(orderItemId);
+        item.markAsPreparing();
+    }
+
+    public void markItemAsReady(UUID orderItemId) {
+        OrderItem item = findItemOrFail(orderItemId);
+        item.markAsReady();
+    }
+
+    public void markItemAsDelivered(UUID orderItemId) {
+        OrderItem item = findItemOrFail(orderItemId);
+        item.markAsDelivered();
     }
 }

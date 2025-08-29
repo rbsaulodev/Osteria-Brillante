@@ -1,5 +1,6 @@
 package com.rb.api.domain.model;
 
+import com.rb.api.domain.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AccessLevel;

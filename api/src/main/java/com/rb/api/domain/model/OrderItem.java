@@ -1,5 +1,6 @@
 package com.rb.api.domain.model;
 
+import com.rb.api.domain.enums.OrderItemStatus;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -46,5 +47,33 @@ public class OrderItem {
         this.quantity = quantity;
         this.priceAtOrder = menuItem.getPrice();
         this.status = OrderItemStatus.PENDING;
+    }
+
+    public void changeQuantity(int newQuantity) {
+        if (newQuantity <= 0) {
+            throw new IllegalArgumentException("A quantidade deve ser positiva.");
+        }
+        this.quantity = newQuantity;
+    }
+
+    public void markAsPreparing() {
+        if (this.status != OrderItemStatus.PENDING) {
+            throw new IllegalStateException("O item só pode ser preparado se estiver pendente.");
+        }
+        this.status = OrderItemStatus.PREPARING;
+    }
+
+    public void markAsReady() {
+        if (this.status != OrderItemStatus.PREPARING) {
+            throw new IllegalStateException("O item só pode ficar pronto se estiver em preparação.");
+        }
+        this.status = OrderItemStatus.READY;
+    }
+
+    public void markAsDelivered() {
+        if (this.status != OrderItemStatus.READY) {
+            throw new IllegalStateException("O item só pode ser entregue se estiver pronto.");
+        }
+        this.status = OrderItemStatus.DELIVERED;
     }
 }

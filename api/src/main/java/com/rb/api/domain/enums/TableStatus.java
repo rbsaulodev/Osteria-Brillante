@@ -1,9 +1,10 @@
-package com.rb.api.domain.model;
+package com.rb.api.domain.enums;
 
 import lombok.Getter;
 
 @Getter
 public enum TableStatus {
+    RESERVED("Reservada"),
     AVAILABLE("Disponível"),
     OCCUPIED("Ocupada");
 
