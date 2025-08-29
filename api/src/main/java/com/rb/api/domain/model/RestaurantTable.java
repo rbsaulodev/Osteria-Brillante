@@ -1,4 +1,4 @@
-package com.rb.api.domain;
+package com.rb.api.domain.model;
 
 import com.rb.api.domain.enums.TableStatus;
 import jakarta.persistence.*;
@@ -27,8 +27,6 @@ public class RestaurantTable {
         this.tableNumber = tableNumber;
         this.status = TableStatus.AVAILABLE;
     }
-
-    // --- MÉTODOS DE NEGÓCIO ---
 
     public void occupy() {
         if (this.status != TableStatus.AVAILABLE && this.status != TableStatus.RESERVED) {
