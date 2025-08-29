@@ -28,4 +28,12 @@ public class Category {
         this.name = name;
         this.description = description;
     }
+
+    public void updateDetails(String newName, String newDescription) {
+        if (newName == null || newName.isBlank()) {
+            throw new IllegalArgumentException("O nome da categoria não pode ser vazio.");
+        }
+        this.name = newName;
+        this.description = newDescription;
+    }
 }

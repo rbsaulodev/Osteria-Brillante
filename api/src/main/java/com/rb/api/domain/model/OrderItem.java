@@ -41,6 +41,8 @@ public class OrderItem {
     @Column(nullable = false)
     private OrderItemStatus status;
 
+    private String notes;
+
     protected OrderItem(Order order, MenuItem menuItem, int quantity) {
         this.order = order;
         this.menuItem = menuItem;
@@ -75,5 +77,9 @@ public class OrderItem {
             throw new IllegalStateException("O item só pode ser entregue se estiver pronto.");
         }
         this.status = OrderItemStatus.DELIVERED;
+    }
+
+    public void addNote(String note) {
+        this.notes = note;
     }
 }

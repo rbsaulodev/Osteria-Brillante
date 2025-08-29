@@ -6,7 +6,8 @@ import lombok.Getter;
 public enum OrderStatus {
     OPEN("Aberto"),
     CLOSED("Fechada"),
-    PAID("Paga");
+    PAID("Paga"),
+    CANCELLED("Cancelada");
 
     private final String displayName;
 

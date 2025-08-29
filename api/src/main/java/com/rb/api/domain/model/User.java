@@ -46,7 +46,7 @@ public class User {
     @Column(nullable = false)
     private LocalDateTime updatedAt;
 
-    public User(String fullName, String email, String passwordHash, UserRole role) {
+    protected User(String fullName, String email, String passwordHash, UserRole role) {
         this.fullName = fullName;
         this.email = email;
         this.passwordHash = passwordHash;
@@ -68,4 +68,28 @@ public class User {
             this.email = newEmail;
         }
     }
+
+    public static User createCustomer(String fullName, String email, String passwordHash) {
+        return new User(fullName, email, passwordHash, UserRole.CUSTOMER);
+    }
+
+    public static User createEmployee(String fullName, String email, String passwordHash, UserRole role) {
+        if (role == UserRole.CUSTOMER) {
+            throw new IllegalArgumentException("Para criar um cliente, use o método createCustomer.");
+        }
+        return new User(fullName, email, passwordHash, role);
+    }
+
+    public void changeRole(UserRole newRole) {
+        if (newRole == null) {
+            throw new IllegalArgumentException("A nova função não pode ser nula.");
+        }
+
+        if (this.role == UserRole.CUSTOMER) {
+            throw new IllegalStateException("Não é possível alterar a função de um cliente por este método.");
+        }
+
+        this.role = newRole;
+    }
+
 }

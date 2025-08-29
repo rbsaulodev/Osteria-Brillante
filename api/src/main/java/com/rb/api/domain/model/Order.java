@@ -1,5 +1,6 @@
 package com.rb.api.domain.model;
 
+import com.rb.api.domain.RestaurantTable;
 import com.rb.api.domain.enums.OrderItemStatus;
 import com.rb.api.domain.enums.OrderStatus;
 import com.rb.api.domain.enums.PaymentMethod;
@@ -110,6 +111,21 @@ public class Order {
         this.status = OrderStatus.OPEN;
     }
 
+    public void cancel() {
+
+        if (this.status == OrderStatus.PAID) {
+            throw new IllegalStateException("Não é possível cancelar um pedido que já foi pago.");
+        }
+
+        boolean hasPreparingItems = this.items.stream()
+           .anyMatch(item -> item.getStatus() == OrderItemStatus.PREPARING);
+
+        if (hasPreparingItems) {
+            throw new IllegalStateException("Não é possível cancelar o pedido, pois itens já estão sendo preparados.");
+        }
+        this.status = OrderStatus.CANCELLED;
+    }
+
     private void recalculateTotal() {
         this.totalAmount = this.items.stream()
                 .map(item -> item.getPriceAtOrder().multiply(new BigDecimal(item.getQuantity())))
@@ -157,5 +173,10 @@ public class Order {
     public void markItemAsDelivered(UUID orderItemId) {
         OrderItem item = findItemOrFail(orderItemId);
         item.markAsDelivered();
+    }
+
+    public void addNoteToItem(UUID orderItemId, String note) {
+        OrderItem item = findItemOrFail(orderItemId);
+        item.addNote(note);
     }
 }
