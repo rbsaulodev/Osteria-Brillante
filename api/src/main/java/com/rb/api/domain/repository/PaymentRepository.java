@@ -1,6 +1,5 @@
 package com.rb.api.domain.repository;
 
-import com.rb.api.domain.model.Category;
 import com.rb.api.domain.model.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

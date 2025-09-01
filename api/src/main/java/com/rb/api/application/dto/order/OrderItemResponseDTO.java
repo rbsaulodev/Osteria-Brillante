@@ -6,8 +6,11 @@ import java.util.UUID;
 
 public record OrderItemResponseDTO(
         UUID id,
+        UUID menuItemId,
         String name,
         int quantity,
         BigDecimal priceAtOrder,
-        OrderItemStatus status
+        BigDecimal totalPrice,
+        OrderItemStatus status,
+        String notes
 ) {}

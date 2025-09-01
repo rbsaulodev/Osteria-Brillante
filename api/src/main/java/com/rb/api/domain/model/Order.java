@@ -1,6 +1,5 @@
 package com.rb.api.domain.model;
 
-import com.rb.api.domain.RestaurantTable;
 import com.rb.api.domain.enums.OrderItemStatus;
 import com.rb.api.domain.enums.OrderStatus;
 import com.rb.api.domain.enums.PaymentMethod;
