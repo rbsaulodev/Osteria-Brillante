@@ -55,4 +55,11 @@ public class RestaurantTable {
         }
         this.status = TableStatus.AVAILABLE;
     }
+
+    public void changeTableNumber(int newNumber) {
+        if (newNumber <= 0) {
+            throw new IllegalArgumentException("O número da mesa deve ser positivo.");
+        }
+        this.tableNumber = newNumber;
+    }
 }

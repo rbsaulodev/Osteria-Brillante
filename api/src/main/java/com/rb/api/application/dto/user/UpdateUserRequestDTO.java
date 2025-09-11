@@ -8,5 +8,7 @@ public record UpdateUserRequestDTO(
         String fullName,
 
         @Email
-        String email
+        String email,
+
+        String password
 ) {}

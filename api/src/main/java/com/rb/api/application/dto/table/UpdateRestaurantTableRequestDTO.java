@@ -5,7 +5,5 @@ import jakarta.validation.constraints.Positive;
 
 public record UpdateRestaurantTableRequestDTO(
         @Positive(message = "O número da mesa deve ser positivo.")
-        Integer tableNumber,
-
-        TableStatus status
+        Integer tableNumber
 ) {}

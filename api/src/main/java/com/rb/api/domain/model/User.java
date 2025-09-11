@@ -1,5 +1,6 @@
 package com.rb.api.domain.model;
 
+import com.rb.api.application.dto.user.CreateUserRequestDTO;
 import com.rb.api.domain.enums.UserRole;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
@@ -53,6 +54,13 @@ public class User {
         this.role = role;
     }
 
+    public User(CreateUserRequestDTO dto) {
+        this.fullName = dto.fullName();
+        this.email = dto.email();
+        this.passwordHash = dto.email();
+        this.role = dto.role();
+    }
+
     public void changePassword(String newPasswordHash) {
         if (newPasswordHash == null || newPasswordHash.isBlank()) {
             throw new IllegalArgumentException("A nova senha não pode ser vazia.");
@@ -91,5 +99,4 @@ public class User {
 
         this.role = newRole;
     }
-
 }

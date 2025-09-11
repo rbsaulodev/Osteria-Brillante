@@ -11,7 +11,6 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.IGNORE
 )
 public interface CategoryMapper {
-
     Category toEntity(CreateCategoryRequestDTO dto);
     CategoryResponseDTO toResponseDTO(Category category);
 }
