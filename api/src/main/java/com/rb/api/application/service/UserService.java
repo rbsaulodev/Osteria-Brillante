@@ -8,6 +8,7 @@ import com.rb.api.domain.model.User;
 import com.rb.api.domain.enums.UserRole;
 import com.rb.api.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,19 +20,23 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    // private final PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserService(UserRepository userRepository, UserMapper userMapper) {
+    public UserService(UserRepository userRepository, UserMapper userMapper, PasswordEncoder passwordEncoder) { // 3. Adicionar no construtor
         this.userRepository = userRepository;
         this.userMapper = userMapper;
+        this.passwordEncoder = passwordEncoder;
     }
 
 
     @Transactional
     public UserResponseDTO changePassword(UUID id, UserChangePasswordRequestDTO dto){
         User user = findEntityById(id);
-        user.changePassword(dto.newPassword());
+
+        String hashedNewPassword = passwordEncoder.encode(dto.newPassword());
+        user.changePassword(hashedNewPassword);
+
         return userMapper.toResponseDTO(user);
     }
 
@@ -41,12 +46,11 @@ public class UserService {
             throw new EmailAlreadyExistsException("O email informado já está em uso: " + dto.email());
         });
 
-        // TODO: Substituir este placeholder pela implementação real do BCryptPasswordEncoder
-        String temporaryPasswordHash = "temp_hashed_" + dto.password();
+        String hashedPassword = passwordEncoder.encode(dto.password());
 
         User newUser = (dto.role() == UserRole.CUSTOMER)
-                ? User.createCustomer(dto.fullName(), dto.email(), temporaryPasswordHash)
-                : User.createEmployee(dto.fullName(), dto.email(), temporaryPasswordHash, dto.role());
+                ? User.createCustomer(dto.fullName(), dto.email(), hashedPassword) // 6. Usar o hash
+                : User.createEmployee(dto.fullName(), dto.email(), hashedPassword, dto.role()); // 6. Usar o hash
 
         User savedUser = userRepository.save(newUser);
         return userMapper.toResponseDTO(savedUser);
