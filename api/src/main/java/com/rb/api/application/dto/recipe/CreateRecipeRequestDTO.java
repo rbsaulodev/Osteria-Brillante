@@ -4,11 +4,18 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.PositiveOrZero;
 
+import java.util.UUID;
+
 public record CreateRecipeRequestDTO(
-        @NotBlank(message = "As instruções não podem ser vazias.")
+
+        @NotNull(message = "O ID do item do cardápio é obrigatório")
+        UUID menuItemId,
+
+        @NotBlank(message = "As instruções são obrigatórias")
         String instructions,
 
-        @NotNull(message = "O tempo de preparo é obrigatório.")
-        @PositiveOrZero(message = "O tempo de preparo não pode ser negativo.")
+        @NotNull(message = "O tempo de preparação é obrigatório")
+        @PositiveOrZero(message = "O tempo de preparação não pode ser negativo")
         Integer prepTimeMinutes
-) {}
+) {
+}
