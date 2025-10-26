@@ -1,4 +1,4 @@
-package com.rb.api.application.dto.menu;
+package com.rb.api.application.dto.menuitem;
 
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;

@@ -1,21 +1,17 @@
 package com.rb.api.application.mapper;
 
-import com.rb.api.application.dto.menu.CreateMenuItemRequestDTO;
-import com.rb.api.application.dto.menu.MenuItemResponseDTO;
-import com.rb.api.application.dto.menu.UpdateMenuItemRequestDTO;
+import com.rb.api.application.dto.menuitem.MenuItemResponseDTO;
 import com.rb.api.domain.model.MenuItem;
-import org.mapstruct.*;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
-@Mapper(
-        componentModel = "spring",
-        unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        uses = { CategoryMapper.class, RecipeMapper.class }
-)
+import java.util.List;
+
+@Mapper(componentModel = "spring")
 public interface MenuItemMapper {
-
-    @Mapping(target = "category", ignore = true)
-    MenuItem toEntity(CreateMenuItemRequestDTO dto);
+    @Mapping(source = "category.id", target = "categoryId")
+    @Mapping(source = "category.name", target = "categoryName")
     MenuItemResponseDTO toResponseDTO(MenuItem menuItem);
-    @Mapping(target = "category", ignore = true)
-    void updateEntityFromDto(UpdateMenuItemRequestDTO dto, @MappingTarget MenuItem menuItem);
+
+    List<MenuItemResponseDTO> toResponseDTOList(List<MenuItem> menuItems);
 }

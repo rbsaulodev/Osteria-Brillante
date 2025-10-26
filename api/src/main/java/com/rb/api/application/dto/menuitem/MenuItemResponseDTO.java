@@ -1,7 +1,4 @@
-package com.rb.api.application.dto.menu;
-
-import com.rb.api.application.dto.category.CategoryResponseDTO;
-import com.rb.api.application.dto.recipe.RecipeResponseDTO;
+package com.rb.api.application.dto.menuitem;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,8 +10,9 @@ public record MenuItemResponseDTO(
         String description,
         BigDecimal price,
         boolean isAvailable,
-        CategoryResponseDTO category,
+        UUID categoryId,
+        String categoryName,
         LocalDateTime createdAt,
-        LocalDateTime updatedAt,
-        RecipeResponseDTO recipe
-) {}
+        LocalDateTime updatedAt
+) {
+}
