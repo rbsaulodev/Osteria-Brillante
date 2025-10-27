@@ -1,6 +1,5 @@
 package com.rb.api.application.dto.order;
 
-import com.rb.api.application.dto.payment.PaymentResponseDTO;
 import com.rb.api.domain.enums.OrderStatus;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -9,12 +8,16 @@ import java.util.UUID;
 
 public record OrderResponseDTO(
         UUID id,
-        int tableNumber,
+        UUID tableId,
+        Integer tableNumber,
+        UUID waiterId,
         String waiterName,
         OrderStatus status,
         BigDecimal totalAmount,
-        BigDecimal balanceDue,
+        BigDecimal balance,
         LocalDateTime createdAt,
+        LocalDateTime updatedAt,
         List<OrderItemResponseDTO> items,
-        List<PaymentResponseDTO> payments
-) {}
+        int totalItems
+) {
+}

@@ -7,10 +7,10 @@ import java.util.UUID;
 public record OrderItemResponseDTO(
         UUID id,
         UUID menuItemId,
-        String name,
+        String menuItemName,
         int quantity,
         BigDecimal priceAtOrder,
-        BigDecimal totalPrice,
         OrderItemStatus status,
         String notes
-) {}
+) {
+}
