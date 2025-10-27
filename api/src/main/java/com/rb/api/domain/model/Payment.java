@@ -23,6 +23,11 @@ public class Payment {
     private UUID id;
 
     @NotNull
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id", nullable = false)
+    private Order order;
+
+    @NotNull
     @Positive
     @Column(nullable = false)
     private BigDecimal amount;
@@ -35,7 +40,15 @@ public class Payment {
     @Column(nullable = false, updatable = false)
     private LocalDateTime transactionDate;
 
-    public Payment(BigDecimal amount, PaymentMethod paymentMethod) {
+    public Payment(Order order, BigDecimal amount, PaymentMethod paymentMethod) {
+        if (order == null) {
+            throw new IllegalArgumentException("O pedido não pode ser nulo.");
+        }
+        if (amount == null || amount.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("O valor do pagamento deve ser positivo.");
+        }
+
+        this.order = order;
         this.amount = amount;
         this.paymentMethod = paymentMethod;
         this.transactionDate = LocalDateTime.now();

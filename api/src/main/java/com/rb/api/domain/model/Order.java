@@ -39,8 +39,7 @@ public class Order {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItem> items = new ArrayList<>();
 
-    @OneToMany(cascade = CascadeType.ALL)
-    @JoinColumn(name = "order_id")
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Payment> payments = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
@@ -82,7 +81,7 @@ public class Order {
             throw new IllegalArgumentException("O valor do pagamento não pode ser maior que o saldo devedor.");
         }
 
-        this.payments.add(new Payment(amount, method));
+        this.payments.add(new Payment(this, amount, method));
 
         if (getBalance().compareTo(BigDecimal.ZERO) == 0) {
             this.status = OrderStatus.PAID;
