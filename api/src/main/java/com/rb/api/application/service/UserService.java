@@ -49,8 +49,8 @@ public class UserService {
         String hashedPassword = passwordEncoder.encode(dto.password());
 
         User newUser = (dto.role() == UserRole.CUSTOMER)
-                ? User.createCustomer(dto.fullName(), dto.email(), hashedPassword) // 6. Usar o hash
-                : User.createEmployee(dto.fullName(), dto.email(), hashedPassword, dto.role()); // 6. Usar o hash
+                ? User.createCustomer(dto.fullName(), dto.email(), hashedPassword)
+                : User.createEmployee(dto.fullName(), dto.email(), hashedPassword, dto.role());
 
         User savedUser = userRepository.save(newUser);
         return userMapper.toResponseDTO(savedUser);
