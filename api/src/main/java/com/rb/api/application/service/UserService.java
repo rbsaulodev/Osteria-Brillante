@@ -1,5 +1,6 @@
 package com.rb.api.application.service;
 
+import com.rb.api.application.dto.auth.RegisterDTO;
 import com.rb.api.application.dto.user.*;
 import com.rb.api.application.exception.EmailAlreadyExistsException;
 import com.rb.api.application.exception.ResourceNotFoundException;
@@ -41,16 +42,32 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO create(CreateUserRequestDTO dto) {
+    public UserResponseDTO createCustomer(RegisterDTO dto) {
         userRepository.findByEmail(dto.email()).ifPresent(user -> {
             throw new EmailAlreadyExistsException("O email informado já está em uso: " + dto.email());
         });
 
         String hashedPassword = passwordEncoder.encode(dto.password());
+        User newUser = User.createCustomer(dto.fullName(), dto.email(), hashedPassword);
 
-        User newUser = (dto.role() == UserRole.CUSTOMER)
-                ? User.createCustomer(dto.fullName(), dto.email(), hashedPassword)
-                : User.createEmployee(dto.fullName(), dto.email(), hashedPassword, dto.role());
+        User savedUser = userRepository.save(newUser);
+        return userMapper.toResponseDTO(savedUser);
+    }
+
+    @Transactional
+    public UserResponseDTO createEmployee(CreateEmployeeRequestDTO dto) {
+
+        userRepository.findByEmail(dto.email()).ifPresent(user -> {
+            throw new EmailAlreadyExistsException("O email informado já está em uso: " + dto.email());
+        });
+
+        if (dto.role() == UserRole.CUSTOMER) {
+            throw new IllegalArgumentException("Clientes devem usar a rota de registro público.");
+        }
+
+        String hashedPassword = passwordEncoder.encode(dto.password());
+
+        User newUser = User.createEmployee(dto.fullName(), dto.email(), hashedPassword, dto.role());
 
         User savedUser = userRepository.save(newUser);
         return userMapper.toResponseDTO(savedUser);

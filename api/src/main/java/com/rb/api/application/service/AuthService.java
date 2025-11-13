@@ -4,7 +4,6 @@ import com.rb.api.application.dto.auth.AuthDTO;
 import com.rb.api.application.dto.auth.RegisterDTO;
 import com.rb.api.application.dto.auth.TokenResponseDTO;
 import com.rb.api.application.exception.EmailAlreadyExistsException;
-import com.rb.api.domain.enums.UserRole;
 import com.rb.api.domain.model.User;
 import com.rb.api.domain.repository.UserRepository;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -58,14 +57,11 @@ public class AuthService implements UserDetailsService {
         }
 
         String hashedPassword = passwordEncoder.encode(dto.password());
-
-        User newUser = (dto.role() == UserRole.CUSTOMER)
-                ? User.createCustomer(dto.fullName(), dto.email(), hashedPassword)
-                : User.createEmployee(dto.fullName(), dto.email(), hashedPassword, dto.role());
+        User newUser = User.createCustomer(dto.fullName(), dto.email(), hashedPassword);
 
         User savedUser = userRepository.save(newUser);
-
         String token = tokenService.generateToken(savedUser);
+
         return new TokenResponseDTO(token, savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
     }
 
