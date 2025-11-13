@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Service
 public class MenuItemService {
@@ -28,6 +29,44 @@ public class MenuItemService {
         this.menuItemRepository = menuItemRepository;
         this.categoryRepository = categoryRepository;
         this.menuItemMapper = menuItemMapper;
+    }
+
+    @Transactional(readOnly = true)
+    public MenuItemResponseDTO findById(UUID id) {
+        return menuItemRepository.findById(id)
+                .map(menuItemMapper::toResponseDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Item do cardápio não encontrado com o ID: " + id));
+    }
+
+    @Transactional(readOnly = true)
+    public List<MenuItemResponseDTO> searchAndFilter(
+            SearchMenuItemDTO searchDto,
+            UUID categoryId,
+            Boolean available
+    ) {
+        List<MenuItem> items = menuItemRepository.findAll();
+
+        if (searchDto != null && searchDto.name() != null && !searchDto.name().isBlank()) {
+            items = items.stream()
+                    .filter(item -> item.getName().toLowerCase().contains(searchDto.name().toLowerCase()))
+                    .collect(Collectors.toList());
+        }
+
+        if (categoryId != null) {
+            items = items.stream()
+                    .filter(item -> item.getCategory().getId().equals(categoryId))
+                    .collect(Collectors.toList());
+        }
+
+        if (available != null) {
+            items = items.stream()
+                    .filter(item -> item.isAvailable() == available)
+                    .collect(Collectors.toList());
+        }
+
+        return items.stream()
+                .map(menuItemMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -48,11 +87,8 @@ public class MenuItemService {
     @Transactional
     public MenuItemResponseDTO updateDetails(UUID id, UpdateMenuItemDetailsDTO dto) {
         MenuItem menuItem = findMenuItemEntityById(id);
-
         Category newCategory = findCategoryEntityById(dto.categoryId());
-
         menuItem.updateDetails(dto.name(), dto.description(), newCategory);
-
         return menuItemMapper.toResponseDTO(menuItem);
     }
 
@@ -76,40 +112,12 @@ public class MenuItemService {
         return menuItemMapper.toResponseDTO(menuItem);
     }
 
-    @Transactional(readOnly = true)
-    public MenuItemResponseDTO findById(UUID id) {
-        return menuItemRepository.findById(id)
-                .map(menuItemMapper::toResponseDTO)
-                .orElseThrow(() -> new ResourceNotFoundException("Item do cardápio não encontrado com o ID: " + id));
-    }
-
-    @Transactional(readOnly = true)
-    public List<MenuItemResponseDTO> findAll() {
-        List<MenuItem> items = menuItemRepository.findAll();
-        return menuItemMapper.toResponseDTOList(items);
-    }
-
-    @Transactional(readOnly = true)
-    public List<MenuItemResponseDTO> findAllAvailable() {
-        List<MenuItem> items = menuItemRepository.findByIsAvailableTrue();
-        return menuItemMapper.toResponseDTOList(items);
-    }
-
-    @Transactional(readOnly = true)
-    public List<MenuItemResponseDTO> findAllByCategoryId(UUID categoryId) {
-        if (!categoryRepository.existsById(categoryId)) {
-            throw new ResourceNotFoundException("Categoria não encontrada com o ID: " + categoryId);
-        }
-        List<MenuItem> items = menuItemRepository.findByCategoryId(categoryId);
-        return menuItemMapper.toResponseDTOList(items);
-    }
-
     @Transactional
     public void deleteById(UUID id) {
         MenuItem menuItem = findMenuItemEntityById(id);
         menuItemRepository.delete(menuItem);
     }
-
+    
     private MenuItem findMenuItemEntityById(UUID id) {
         return menuItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Item do cardápio não encontrado com o ID: " + id));
