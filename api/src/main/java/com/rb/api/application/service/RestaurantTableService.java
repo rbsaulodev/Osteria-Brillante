@@ -5,6 +5,7 @@ import com.rb.api.application.dto.table.RestaurantTableResponseDTO;
 import com.rb.api.application.dto.table.UpdateRestaurantTableRequestDTO;
 import com.rb.api.application.exception.ResourceNotFoundException;
 import com.rb.api.application.mapper.RestaurantTableMapper;
+import com.rb.api.domain.enums.TableStatus;
 import com.rb.api.domain.model.RestaurantTable;
 import com.rb.api.domain.repository.RestaurantTableRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,10 +62,33 @@ public class RestaurantTableService {
         return restaurantTableMapper.toResponseDTO(savedTable);
     }
 
+    @Transactional
+    public RestaurantTableResponseDTO update(UUID id, UpdateRestaurantTableRequestDTO dto) {
+        RestaurantTable tableToUpdate = findEntityById(id);
+        if (dto.tableNumber() != null) {
+            tableToUpdate.changeTableNumber(dto.tableNumber());
+        }
+
+        return restaurantTableMapper.toResponseDTO(tableToUpdate);
+    }
+
+    @Transactional
+    public void deleteById(UUID id) {
+        RestaurantTable table = findEntityById(id);
+        restaurantTableRepository.delete(table);
+    }
+
     @Transactional(readOnly = true)
-    public List<RestaurantTableResponseDTO> findAll(){
-        return restaurantTableRepository.findAll()
-                .stream()
+    public List<RestaurantTableResponseDTO> findAll(TableStatus status){
+        List<RestaurantTable> tables;
+
+        if (status != null) {
+            tables = restaurantTableRepository.findByStatus(status);
+        } else {
+            tables = restaurantTableRepository.findAll();
+        }
+
+        return tables.stream()
                 .map(this.restaurantTableMapper::toResponseDTO)
                 .collect(Collectors.toList());
     }
@@ -74,16 +98,6 @@ public class RestaurantTableService {
         return restaurantTableRepository.findById(id)
                 .map(this.restaurantTableMapper::toResponseDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Mesa não encontrada com o ID: " + id));
-    }
-
-    @Transactional
-    public RestaurantTableResponseDTO update(UUID id, UpdateRestaurantTableRequestDTO dto) {
-        RestaurantTable tableToUpdate = findEntityById(id);
-        if (dto.tableNumber() != null) {
-            tableToUpdate.changeTableNumber(dto.tableNumber());
-        }
-
-        return restaurantTableMapper.toResponseDTO(tableToUpdate);
     }
 
     private RestaurantTable findEntityById(UUID id) {

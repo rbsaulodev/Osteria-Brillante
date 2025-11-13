@@ -117,7 +117,7 @@ public class MenuItemService {
         MenuItem menuItem = findMenuItemEntityById(id);
         menuItemRepository.delete(menuItem);
     }
-    
+
     private MenuItem findMenuItemEntityById(UUID id) {
         return menuItemRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Item do cardápio não encontrado com o ID: " + id));
