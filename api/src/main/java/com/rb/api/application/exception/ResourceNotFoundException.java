@@ -1,10 +1,12 @@
 package com.rb.api.application.exception;
 
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import java.util.UUID;
 
-@ResponseStatus(HttpStatus.NOT_FOUND)
-public class ResourceNotFoundException extends RuntimeException {
+public class ResourceNotFoundException extends BusinessException {
+    public ResourceNotFoundException(String resourceName, UUID id) {
+        super(resourceName + " com ID " + id + " não encontrado(a).");
+    }
+
     public ResourceNotFoundException(String message) {
         super(message);
     }

@@ -3,20 +3,51 @@ package com.rb.api.application.service;
 import com.rb.api.domain.model.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;
+import java.util.Collection;
 
 @Service("securityService")
 public class SecurityService {
-    public boolean isOwner(UUID targetId) {
+
+    private User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated() || !(authentication.getPrincipal() instanceof User)) {
+            return null;
+        }
+        return (User) authentication.getPrincipal();
+    }
+
+    public boolean isOwner(UUID targetId) {
+        User currentUser = getAuthenticatedUser();
+        if (currentUser == null) {
+            return false;
+        }
+        return currentUser.getId().equals(targetId);
+    }
+
+    public boolean hasRole(String roleName) {
+        User currentUser = getAuthenticatedUser();
+        if (currentUser == null) {
             return false;
         }
 
-        User currentUser = (User) authentication.getPrincipal();
-        return currentUser.getId().equals(targetId);
+        String fullRoleName = roleName.toUpperCase().startsWith("ROLE_") ? roleName.toUpperCase() : "ROLE_" + roleName.toUpperCase();
+
+        Collection<? extends GrantedAuthority> authorities = currentUser.getAuthorities();
+
+        return authorities.stream()
+                .anyMatch(a -> a.getAuthority().equals(fullRoleName));
+    }
+
+    public UUID getCurrentUserId() {
+        User currentUser = getAuthenticatedUser();
+        if (currentUser == null) {
+            throw new SecurityException("Usuário não autenticado no contexto de segurança.");
+        }
+        return currentUser.getId();
     }
 }

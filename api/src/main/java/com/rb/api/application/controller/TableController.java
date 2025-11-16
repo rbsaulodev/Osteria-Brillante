@@ -22,7 +22,7 @@ public class TableController {
     public TableController(RestaurantTableService tableService) {
         this.tableService = tableService;
     }
-    
+
     @PatchMapping("/{id}/occupy")
     @PreAuthorize("hasAnyRole('ADMIN', 'WAITER')")
     public ResponseEntity<RestaurantTableResponseDTO> occupyTable(@PathVariable UUID id){
