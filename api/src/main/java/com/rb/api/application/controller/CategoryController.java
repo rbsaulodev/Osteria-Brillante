@@ -33,10 +33,9 @@ public class CategoryController {
     @GetMapping
     @PreAuthorize("permitAll() or hasAnyRole('ADMIN', 'WAITER', 'COOK')")
     public ResponseEntity<List<CategoryResponseDTO>> findAll(){
-        List<CategoryResponseDTO> categorys = categoryService.findAll();
-        return ResponseEntity.ok(categorys);
+        List<CategoryResponseDTO> categories = categoryService.findAll();
+        return ResponseEntity.ok(categories);
     }
-
 
     @GetMapping("/{id}")
     @PreAuthorize("permitAll() or hasAnyRole('ADMIN', 'WAITER', 'COOK')")
