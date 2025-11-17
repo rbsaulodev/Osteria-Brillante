@@ -73,21 +73,6 @@ public class Order {
         recalculateTotal();
     }
 
-    public void registerPayment(BigDecimal amount, PaymentMethod method) {
-        if (this.status == OrderStatus.PAID) {
-            throw new IllegalStateException("Este pedido já está totalmente pago.");
-        }
-        if (amount.compareTo(getBalance()) > 0) {
-            throw new IllegalArgumentException("O valor do pagamento não pode ser maior que o saldo devedor.");
-        }
-
-        this.payments.add(new Payment(this, amount, method));
-
-        if (getBalance().compareTo(BigDecimal.ZERO) == 0) {
-            this.status = OrderStatus.PAID;
-        }
-    }
-
     public BigDecimal getBalance() {
         BigDecimal totalPaid = this.payments.stream()
                 .map(Payment::getAmount)

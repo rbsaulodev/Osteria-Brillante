@@ -84,17 +84,6 @@ public class OrderController {
         return ResponseEntity.ok(order);
     }
 
-    @PostMapping("/{orderId}/payment")
-    @PreAuthorize("hasAnyRole('ADMIN', 'WAITER')")
-    public ResponseEntity<OrderResponseDTO> registerPayment(
-            @PathVariable UUID orderId,
-            @RequestBody @Valid RegisterPaymentRequestDTO dto
-    ){
-        OrderResponseDTO order = orderService.registerPayment(orderId, dto);
-        return ResponseEntity.ok(order);
-    }
-
-
     @PatchMapping("/{orderId}/items/{orderItemId}/preparing")
     @PreAuthorize("hasAnyRole('ADMIN', 'COOK')")
     public ResponseEntity<OrderResponseDTO> markItemAsPreparing(

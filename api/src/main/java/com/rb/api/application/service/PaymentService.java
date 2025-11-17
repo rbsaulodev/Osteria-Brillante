@@ -1,8 +1,12 @@
 package com.rb.api.application.service;
 
 import com.rb.api.application.dto.payment.PaymentResponseDTO;
+import com.rb.api.application.dto.payment.RegisterPaymentRequestDTO;
 import com.rb.api.application.exception.ResourceNotFoundException;
 import com.rb.api.application.mapper.PaymentMapper;
+import com.rb.api.domain.model.Order;
+import com.rb.api.domain.model.Payment;
+import com.rb.api.domain.repository.OrderRepository;
 import com.rb.api.domain.repository.PaymentRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,10 +22,27 @@ public class PaymentService {
 
     private final PaymentRepository paymentRepository;
     private final PaymentMapper paymentMapper;
+    private final OrderRepository orderRepository;
 
-    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper) {
+    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper, OrderRepository orderRepository) {
         this.paymentRepository = paymentRepository;
         this.paymentMapper = paymentMapper;
+        this.orderRepository = orderRepository;
+    }
+
+    @Transactional
+    public PaymentResponseDTO registerPayment(UUID orderId, RegisterPaymentRequestDTO dto) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new ResourceNotFoundException("Pedido", orderId));
+
+        Payment newPayment = Payment.of(
+                order,
+                dto.amount(),
+                dto.method()
+        );
+
+        Payment savedPayment = paymentRepository.save(newPayment);
+        return paymentMapper.toResponseDTO(savedPayment);
     }
 
     @Transactional(readOnly = true)

@@ -85,13 +85,6 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponseDTO registerPayment(UUID orderId, RegisterPaymentRequestDTO dto) {
-        Order order = findOrderEntityById(orderId);
-        order.registerPayment(dto.amount(), dto.method());
-        return orderMapper.toResponseDTO(order);
-    }
-
-    @Transactional
     public OrderResponseDTO closeOrder(UUID orderId) {
         Order order = findOrderEntityById(orderId);
         order.closeOrder();
