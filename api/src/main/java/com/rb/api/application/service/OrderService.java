@@ -106,13 +106,6 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderResponseDTO cancelOrder(UUID orderId) {
-        Order order = findOrderEntityById(orderId);
-        order.cancel();
-        return orderMapper.toResponseDTO(order);
-    }
-
-    @Transactional
     public OrderResponseDTO markItemAsPreparing(UUID orderId, UUID orderItemId) {
         Order order = findOrderEntityById(orderId);
         order.markItemAsPreparing(orderItemId);
@@ -135,7 +128,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderResponseDTO findOrderById(UUID orderId) {
-        Order order = orderRepository.findByIdWithItems(orderId) // Usa o método otimizado
+        Order order = orderRepository.findByIdWithItems(orderId)
                 .orElseThrow(() -> new ResourceNotFoundException("Pedido não encontrado com o ID: " + orderId));
         return orderMapper.toResponseDTO(order);
     }
@@ -145,7 +138,6 @@ public class OrderService {
         List<Order> openOrders = orderRepository.findByStatus(OrderStatus.OPEN);
         return orderMapper.toResponseDTOList(openOrders);
     }
-
 
     private Order findOrderEntityById(UUID id) {
         return orderRepository.findByIdWithItems(id)
