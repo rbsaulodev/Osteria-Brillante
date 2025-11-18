@@ -11,7 +11,7 @@ import java.util.List;
 public interface ReservationMapper {
     @Mapping(source = "customer.id", target = "customerId")
     @Mapping(source = "table.id", target = "tableId")
-    @Mapping(source = "table.name", target = "tableName")
+    @Mapping(source = "table.tableNumber", target = "tableNumber")
     ReservationResponseDTO toResponseDTO(Reservation reservation);
 
     List<ReservationResponseDTO> toResponseDTOList(List<Reservation> entities);
