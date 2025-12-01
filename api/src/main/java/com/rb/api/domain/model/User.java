@@ -37,7 +37,7 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
@@ -120,7 +120,7 @@ public class User implements UserDetails {
 
     @Override
     public String getPassword() {
-        return "";
+        return this.passwordHash;
     }
 
     @Override

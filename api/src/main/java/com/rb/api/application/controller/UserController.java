@@ -22,12 +22,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping("/client")
-    public ResponseEntity<UserResponseDTO> createCustomer(@RequestBody @Valid RegisterDTO dto){
-        UserResponseDTO user = userService.createCustomer(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(user);
-    }
-
     @PostMapping("/employee")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> createEmployee(@RequestBody @Valid CreateEmployeeRequestDTO dto){

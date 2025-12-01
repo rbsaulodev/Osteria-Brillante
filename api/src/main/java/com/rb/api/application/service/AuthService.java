@@ -18,13 +18,15 @@ public class AuthService implements UserDetailsService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
+    private final UserService userService;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
-                       TokenService tokenService) {
+                       TokenService tokenService, UserService userService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.tokenService = tokenService;
+        this.userService = userService;
     }
 
     @Override
@@ -34,16 +36,8 @@ public class AuthService implements UserDetailsService {
 
     @Transactional
     public TokenResponseDTO register(RegisterDTO dto) {
-        if (userRepository.findByEmail(dto.email()).isPresent()) {
-            throw new EmailAlreadyExistsException("O email informado já está em uso: " + dto.email());
-        }
-
-        String hashedPassword = passwordEncoder.encode(dto.password());
-        User newUser = User.createCustomer(dto.fullName(), dto.email(), hashedPassword);
-
-        User savedUser = userRepository.save(newUser);
+        User savedUser = userService.createUser(dto);
         String token = tokenService.generateToken(savedUser);
-
         return new TokenResponseDTO(token, savedUser.getId(), savedUser.getEmail(), savedUser.getRole());
     }
 
