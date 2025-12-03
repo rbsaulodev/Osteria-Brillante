@@ -7,6 +7,8 @@ import com.rb.api.domain.model.Category;
 import com.rb.api.domain.model.MenuItem;
 import com.rb.api.domain.repository.CategoryRepository;
 import com.rb.api.domain.repository.MenuItemRepository;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,14 +23,16 @@ public class MenuItemService {
     private final MenuItemRepository menuItemRepository;
     private final CategoryRepository categoryRepository;
     private final MenuItemMapper menuItemMapper;
+    private final EntityManager entityManager;
 
     @Autowired
     public MenuItemService(MenuItemRepository menuItemRepository,
                            CategoryRepository categoryRepository,
-                           MenuItemMapper menuItemMapper) {
+                           MenuItemMapper menuItemMapper, EntityManager entityManager) {
         this.menuItemRepository = menuItemRepository;
         this.categoryRepository = categoryRepository;
         this.menuItemMapper = menuItemMapper;
+        this.entityManager = entityManager;
     }
 
     @Transactional(readOnly = true)
@@ -103,13 +107,33 @@ public class MenuItemService {
     public MenuItemResponseDTO setAvailability(UUID id, UpdateMenuItemAvailabilityDTO dto) {
         MenuItem menuItem = findMenuItemEntityById(id);
 
+        System.out.println("=== INÍCIO ===");
+        System.out.println("ID: " + menuItem.getId());
+        System.out.println("isAvailable ANTES: " + menuItem.isAvailable());
+        System.out.println("DTO isAvailable: " + dto.isAvailable());
+
         if (dto.isAvailable()) {
             menuItem.makeAvailable();
         } else {
             menuItem.makeUnavailable();
         }
 
-        return menuItemMapper.toResponseDTO(menuItem);
+        System.out.println("isAvailable DEPOIS dos métodos: " + menuItem.isAvailable());
+
+        // Força o flush explicitamente
+        MenuItem saved = menuItemRepository.saveAndFlush(menuItem);
+
+        System.out.println("isAvailable DEPOIS do saveAndFlush: " + saved.isAvailable());
+        System.out.println("São o mesmo objeto? " + (menuItem == saved));
+
+        // Limpa o contexto e busca novamente
+        entityManager.clear();
+        MenuItem fromDb = menuItemRepository.findById(id).orElseThrow();
+
+        System.out.println("isAvailable DIRETO DO BANCO: " + fromDb.isAvailable());
+        System.out.println("=== FIM ===");
+
+        return menuItemMapper.toResponseDTO(fromDb);
     }
 
     @Transactional

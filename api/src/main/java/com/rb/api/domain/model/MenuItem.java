@@ -35,8 +35,8 @@ public class MenuItem {
     @Column(nullable = false)
     private BigDecimal price;
 
-    @Column(nullable = false)
-    private boolean isAvailable = true;
+    @Column(name = "is_available", nullable = false)
+    private boolean available = true;
 
     @CreatedDate
     @Column(nullable = false, updatable = false)
@@ -73,10 +73,10 @@ public class MenuItem {
     }
 
     public void makeUnavailable() {
-        this.isAvailable = false;
+        this.available = false;
     }
 
     public void makeAvailable() {
-        this.isAvailable = true;
+        this.available = true;
     }
 }
