@@ -26,8 +26,8 @@ public class TokenService {
             Algorithm algorithm = Algorithm.HMAC256(secret);
             return JWT.create()
                     .withIssuer("rb-api")
-                    .withSubject(user.getEmail())
-                    .withClaim("userId", user.getId().toString())
+                    .withSubject(user.getId().toString())
+                    .withClaim("email", user.getEmail())
                     .withClaim("role", user.getRole().name())
                     .withExpiresAt(generateExpirationDate())
                     .sign(algorithm);

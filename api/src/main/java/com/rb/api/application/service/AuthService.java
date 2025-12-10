@@ -12,6 +12,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.UUID;
+
 @Service
 public class AuthService implements UserDetailsService {
 
@@ -44,5 +46,10 @@ public class AuthService implements UserDetailsService {
     private User findEntityByEmail(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o email: " + email));
+    }
+
+    public UserDetails loadUserById(UUID id) throws UsernameNotFoundException {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o ID: " + id));
     }
 }

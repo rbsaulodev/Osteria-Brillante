@@ -39,7 +39,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{id}/change-pass")
+    @PatchMapping("/{id}/password")
     @PreAuthorize("hasRole('ADMIN') or @securityService.isOwner(#id)")
     public ResponseEntity<UserResponseDTO> changePassword(
             @PathVariable UUID id,

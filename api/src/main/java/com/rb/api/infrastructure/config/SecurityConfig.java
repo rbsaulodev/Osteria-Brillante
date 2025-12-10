@@ -1,6 +1,8 @@
 package com.rb.api.infrastructure.config;
 
+import com.rb.api.application.service.AuthService;
 import com.rb.api.application.service.TokenService;
+import com.rb.api.domain.repository.UserRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -23,8 +25,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     @Bean
-    public SecurityFilter securityFilter(TokenService tokenService, UserDetailsService userDetailsService) {
-        return new SecurityFilter(tokenService, userDetailsService);
+    public SecurityFilter securityFilter(TokenService tokenService, UserDetailsService userDetailsService, UserRepository userRepository, AuthService authService) {
+        return new SecurityFilter(tokenService, userDetailsService, userRepository, authService);
     }
 
     @Bean
@@ -33,24 +35,14 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/auth/login").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/menu", "/tables/available").permitAll()
-
                         .requestMatchers(HttpMethod.PUT, "/users/{id}").authenticated()
                         .requestMatchers(HttpMethod.PATCH, "/users/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/users/{id}/password").authenticated() // <-- NOVO
 
                         .requestMatchers(HttpMethod.GET, "/orders/kitchen").hasAnyRole("ADMIN", "COOK")
-                        .requestMatchers(HttpMethod.PATCH, "/orders/{id}/status/cook").hasAnyRole("ADMIN", "COOK")
-
-                        .requestMatchers(HttpMethod.GET, "/orders").hasAnyRole("ADMIN", "WAITER")
-                        .requestMatchers(HttpMethod.PATCH, "/orders/{id}/status/waiter").hasAnyRole("ADMIN", "WAITER")
-
-                        .requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("ADMIN", "CUSTOMER")
-                        .requestMatchers("/reservations/**").hasAnyRole("ADMIN", "CUSTOMER")
-
                         .requestMatchers("/users/**", "/menu/**", "/tables/**").hasRole("ADMIN")
-
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
