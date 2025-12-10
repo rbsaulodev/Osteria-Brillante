@@ -37,7 +37,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/menu", "/tables/available").permitAll()
 
-                        .requestMatchers("/users/**", "/menu/**", "/tables/**").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.PUT, "/users/{id}").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/users/{id}").authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/orders/kitchen").hasAnyRole("ADMIN", "COOK")
                         .requestMatchers(HttpMethod.PATCH, "/orders/{id}/status/cook").hasAnyRole("ADMIN", "COOK")
@@ -47,6 +48,8 @@ public class SecurityConfig {
 
                         .requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("ADMIN", "CUSTOMER")
                         .requestMatchers("/reservations/**").hasAnyRole("ADMIN", "CUSTOMER")
+
+                        .requestMatchers("/users/**", "/menu/**", "/tables/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )

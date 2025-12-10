@@ -24,9 +24,18 @@ public class SecurityService {
     public boolean isOwner(UUID targetId) {
         User currentUser = getAuthenticatedUser();
         if (currentUser == null) {
+            // Este caso já deveria ter sido pego no ponto 1, se não,
+            // significa que o @PreAuthorize foi avaliado antes do filtro JWT.
+            System.out.println("DEBUG: isOwner - Current user is null.");
             return false;
         }
-        return currentUser.getId().equals(targetId);
+
+        System.out.println("DEBUG: isOwner - Current User ID (from token): " + currentUser.getId());
+        System.out.println("DEBUG: isOwner - Target ID (from URL): " + targetId);
+
+        boolean result = currentUser.getId().equals(targetId);
+        System.out.println("DEBUG: isOwner - Result: " + result);
+        return result;
     }
 
     public boolean hasRole(String roleName) {
