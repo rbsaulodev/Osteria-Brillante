@@ -11,7 +11,7 @@ import java.util.List;
 public interface MenuItemMapper {
     @Mapping(source = "category.id", target = "categoryId")
     @Mapping(source = "category.name", target = "categoryName")
-    @Mapping(source = "available", target = "available")
+    @Mapping(source = "available", target = "isAvailable")
     MenuItemResponseDTO toResponseDTO(MenuItem menuItem);
 
     List<MenuItemResponseDTO> toResponseDTOList(List<MenuItem> menuItems);
