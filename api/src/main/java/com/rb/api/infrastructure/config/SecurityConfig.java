@@ -37,12 +37,16 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/menu", "/tables/available").permitAll()
-                        .requestMatchers(HttpMethod.PUT, "/users/{id}").authenticated()
+
                         .requestMatchers(HttpMethod.PATCH, "/users/{id}").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/users/{id}/password").authenticated() // <-- NOVO
+                        .requestMatchers(HttpMethod.PATCH, "/users/{id}/password").authenticated()
+                        .requestMatchers(HttpMethod.GET, "/users/{id}").authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/orders/kitchen").hasAnyRole("ADMIN", "COOK")
-                        .requestMatchers("/users/**", "/menu/**", "/tables/**").hasRole("ADMIN")
+
+                        .requestMatchers("/users/**").hasRole("ADMIN")
+                        .requestMatchers("/menu/**", "/tables/**").hasRole("ADMIN")
+
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
