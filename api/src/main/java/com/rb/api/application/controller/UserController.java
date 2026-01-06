@@ -49,7 +49,7 @@ public class UserController {
         return ResponseEntity.ok(user);
     }
 
-    @PutMapping("/{id}/change-role")
+    @PatchMapping("/{id}/role")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<UserResponseDTO> changeRole(
             @PathVariable UUID id,
