@@ -43,6 +43,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/users/{id}").authenticated()
 
                         .requestMatchers(HttpMethod.GET, "/orders/kitchen").hasAnyRole("ADMIN", "COOK")
+                        .requestMatchers(HttpMethod.PATCH, "/orders/{id}/status/cook").hasAnyRole("ADMIN", "COOK")
 
                         .requestMatchers("/users/**").hasRole("ADMIN")
                         .requestMatchers("/menu/**", "/tables/**").hasRole("ADMIN")
