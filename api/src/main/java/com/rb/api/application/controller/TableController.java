@@ -64,7 +64,9 @@ public class TableController {
     }
 
     @GetMapping
-    public ResponseEntity<List<RestaurantTableResponseDTO>> findAll(@RequestParam(required = false) TableStatus status){
+    public ResponseEntity<List<RestaurantTableResponseDTO>> findAll(
+            @RequestParam(required = false) TableStatus status
+    ){
         List<RestaurantTableResponseDTO> table = tableService.findAll(status);
         return ResponseEntity.ok(table);
     }
