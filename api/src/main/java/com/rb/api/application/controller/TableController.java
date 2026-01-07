@@ -46,7 +46,7 @@ public class TableController {
         return ResponseEntity.status(HttpStatus.CREATED).body(table);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RestaurantTableResponseDTO> update(
             @PathVariable UUID id,

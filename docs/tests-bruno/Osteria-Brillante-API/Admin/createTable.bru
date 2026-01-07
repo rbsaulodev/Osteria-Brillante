@@ -1,0 +1,26 @@
+meta {
+  name: createTable
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/tables
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "tableNumber": "01"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
