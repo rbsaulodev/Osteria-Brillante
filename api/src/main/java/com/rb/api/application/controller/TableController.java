@@ -64,12 +64,14 @@ public class TableController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<RestaurantTableResponseDTO>> findAll(
-            @RequestParam(required = false) TableStatus status
-    ){
-        List<RestaurantTableResponseDTO> tables = tableService.findAll(status);
-        return ResponseEntity.ok(tables);
+    public ResponseEntity<List<RestaurantTableResponseDTO>> findAll(@RequestParam(required = false) TableStatus status){
+        List<RestaurantTableResponseDTO> table = tableService.findAll(status);
+        return ResponseEntity.ok(table);
+    }
+
+    @GetMapping("/number/{number}")
+    public ResponseEntity<RestaurantTableResponseDTO> findByNumber(@PathVariable int number){
+        return ResponseEntity.ok(tableService.findByNumber(number));
     }
 
     @GetMapping("/{id}")

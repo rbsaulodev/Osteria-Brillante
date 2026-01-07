@@ -1,11 +1,11 @@
 meta {
-  name: deleteById
+  name: findAllUsers
   type: http
-  seq: 3
+  seq: 1
 }
 
-delete {
-  url: {{baseUrl}}/users/bc95f016-a755-48c2-a61c-32715256e90a
+get {
+  url: {{baseUrl}}/users
   body: none
   auth: bearer
 }
