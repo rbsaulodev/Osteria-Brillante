@@ -25,6 +25,7 @@ public class CategoryController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'WAITER', 'COOK')")
     public ResponseEntity<CategoryResponseDTO> create(@RequestBody @Valid CreateCategoryRequestDTO dto){
         CategoryResponseDTO category = categoryService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
@@ -45,6 +46,7 @@ public class CategoryController {
     }
 
     @PutMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'WAITER', 'COOK')")
     public ResponseEntity<CategoryResponseDTO> update(
             @PathVariable UUID id,
             @RequestBody @Valid UpdateCategoryRequestDTO dto
@@ -54,6 +56,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'WAITER', 'COOK')")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id){
         categoryService.deleteById(id);
         return ResponseEntity.noContent().build();

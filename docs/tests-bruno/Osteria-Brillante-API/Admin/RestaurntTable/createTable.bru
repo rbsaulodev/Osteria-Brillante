@@ -1,17 +1,23 @@
 meta {
-  name: findAllUsers
+  name: createTable
   type: http
-  seq: 1
+  seq: 3
 }
 
-get {
-  url: {{baseUrl}}/users
-  body: none
+post {
+  url: {{baseUrl}}/tables
+  body: json
   auth: bearer
 }
 
 auth:bearer {
   token: {{adminToken}}
+}
+
+body:json {
+  {
+    "tableNumber": "01"
+  }
 }
 
 settings {

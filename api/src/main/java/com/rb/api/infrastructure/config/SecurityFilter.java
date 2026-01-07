@@ -12,11 +12,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.UUID;
 
+@Component
 public class SecurityFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
@@ -37,30 +39,20 @@ public class SecurityFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
 
-        String path = request.getServletPath() + (request.getPathInfo() != null ? request.getPathInfo() : "");
-        if (request.getMethod().equalsIgnoreCase("POST") &&
-                (path.endsWith("/auth/login") || path.endsWith("/auth/register")))
-        {
-            filterChain.doFilter(request, response);
-            return;
-        }
-
         String token = recoverToken(request);
 
         if (token != null) {
             String userIdString = tokenService.validateToken(token);
 
-            if (!userIdString.isEmpty()) {
+            if (userIdString != null && !userIdString.isEmpty()) {
                 try {
                     UUID userId = UUID.fromString(userIdString);
                     UserDetails user = authService.loadUserById(userId);
 
                     var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
                     SecurityContextHolder.getContext().setAuthentication(authentication);
-                } catch (IllegalArgumentException e) {
-                    System.err.println("Erro ao converter Subject do token para UUID: " + userIdString);
-                } catch (UsernameNotFoundException e) {
-                    System.err.println("Usuário não encontrado para o ID no token: " + userIdString);
+                } catch (IllegalArgumentException | UsernameNotFoundException e) {
+                    logger.error("Erro na autenticação via Token: " + e.getMessage());
                 }
             }
         }
@@ -74,10 +66,5 @@ public class SecurityFilter extends OncePerRequestFilter {
             return null;
         }
         return authHeader.substring(7);
-    }
-
-    public UserDetails loadUserById(UUID id) throws UsernameNotFoundException {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UsernameNotFoundException("Usuário não encontrado com o ID: " + id));
     }
 }

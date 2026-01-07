@@ -115,7 +115,7 @@ public class User implements UserDetails {
                     new SimpleGrantedAuthority("ROLE_COOK")
             );
         }
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name().toUpperCase()));
     }
 
     @Override

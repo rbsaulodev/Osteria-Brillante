@@ -1,11 +1,11 @@
 meta {
-  name: updateTable
+  name: createCategory
   type: http
-  seq: 6
+  seq: 1
 }
 
-patch {
-  url: {{baseUrl}}/tables/af594b87-8d3b-4ea8-9587-6896b78ccfbc
+post {
+  url: {{baseUrl}}/categories
   body: json
   auth: bearer
 }
@@ -16,7 +16,7 @@ auth:bearer {
 
 body:json {
   {
-    "tableNumber": "2"
+    "name": "Bebidas Geladas"
   }
 }
 

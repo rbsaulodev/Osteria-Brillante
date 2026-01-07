@@ -1,11 +1,11 @@
 meta {
-  name: createTable
+  name: updateTable
   type: http
-  seq: 5
+  seq: 2
 }
 
-post {
-  url: {{baseUrl}}/tables
+patch {
+  url: {{baseUrl}}/tables/af594b87-8d3b-4ea8-9587-6896b78ccfbc
   body: json
   auth: bearer
 }
@@ -16,7 +16,7 @@ auth:bearer {
 
 body:json {
   {
-    "tableNumber": "01"
+    "tableNumber": "2"
   }
 }
 
