@@ -1,0 +1,29 @@
+meta {
+  name: createEmployeeCook
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/users/employee
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "fullName": "Ricardo Souza",
+    "email": "ricardo.cook@osteriabrillante.com",
+    "password": "senhaSegura456",
+    "role": "COOK"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -64,6 +64,7 @@ public class TableController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<RestaurantTableResponseDTO>> findAll(
             @RequestParam(required = false) TableStatus status
     ){
@@ -72,6 +73,7 @@ public class TableController {
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RestaurantTableResponseDTO> findById(@PathVariable UUID id){
         RestaurantTableResponseDTO table = tableService.findById(id);
         return ResponseEntity.ok(table);

@@ -35,18 +35,27 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
+                        // 1. Acesso Público
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
                         .requestMatchers(HttpMethod.GET, "/menu", "/tables/available").permitAll()
 
-                        .requestMatchers(HttpMethod.PATCH, "/users/{id}").authenticated()
-                        .requestMatchers(HttpMethod.PATCH, "/users/{id}/password").authenticated()
+                        .requestMatchers(HttpMethod.PATCH, "/users/{id}", "/users/{id}/password").authenticated()
                         .requestMatchers(HttpMethod.GET, "/users/{id}").authenticated()
+
+                        .requestMatchers(HttpMethod.PATCH, "/tables/{id}/occupy", "/tables/{id}/release").hasAnyRole("ADMIN", "WAITER")
 
                         .requestMatchers(HttpMethod.GET, "/orders/kitchen").hasAnyRole("ADMIN", "COOK")
                         .requestMatchers(HttpMethod.PATCH, "/orders/{id}/status/cook").hasAnyRole("ADMIN", "COOK")
 
+                        .requestMatchers(HttpMethod.GET, "/orders").hasAnyRole("ADMIN", "WAITER")
+                        .requestMatchers(HttpMethod.PATCH, "/orders/{id}/status/waiter").hasAnyRole("ADMIN", "WAITER")
+
+                        .requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("ADMIN", "CUSTOMER")
+                        .requestMatchers("/reservations/**").hasAnyRole("ADMIN", "CUSTOMER")
+
                         .requestMatchers("/users/**").hasRole("ADMIN")
-                        .requestMatchers("/menu/**", "/tables/**").hasRole("ADMIN")
+                        .requestMatchers("/menu/**").hasRole("ADMIN")
+                        .requestMatchers("/tables/**").hasRole("ADMIN")
 
                         .anyRequest().authenticated()
                 )
