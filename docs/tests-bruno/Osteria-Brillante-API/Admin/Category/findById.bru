@@ -1,23 +1,17 @@
 meta {
-  name: createCategory
+  name: findById
   type: http
-  seq: 1
+  seq: 3
 }
 
-post {
-  url: {{baseUrl}}/categories
-  body: json
+get {
+  url: {{baseUrl}}/categories/c76325ad-9704-431b-ae23-118323e4362b
+  body: none
   auth: bearer
 }
 
 auth:bearer {
   token: {{adminToken}}
-}
-
-body:json {
-  {
-    "name": "slaaaa"
-  }
 }
 
 settings {

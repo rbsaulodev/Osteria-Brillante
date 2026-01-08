@@ -1,23 +1,17 @@
 meta {
-  name: createCategory
+  name: deleteCategoryById
   type: http
-  seq: 1
+  seq: 4
 }
 
-post {
-  url: {{baseUrl}}/categories
-  body: json
+delete {
+  url: {{baseUrl}}/categories/2a387ead-b991-46de-b1f2-931a2500c0d8
+  body: none
   auth: bearer
 }
 
 auth:bearer {
   token: {{adminToken}}
-}
-
-body:json {
-  {
-    "name": "slaaaa"
-  }
 }
 
 settings {

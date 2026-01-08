@@ -22,7 +22,7 @@ public class MenuController {
     }
 
     @GetMapping
-    @PreAuthorize("permitAll() or hasAnyRole('ADMIN', 'WAITER', 'COOK')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<MenuItemResponseDTO>> findAll(
             @RequestParam(required = false) UUID categoryId,
             @RequestParam(required = false) Boolean available,
@@ -33,7 +33,7 @@ public class MenuController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("permitAll() or hasAnyRole('ADMIN', 'WAITER', 'COOK')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<MenuItemResponseDTO> findById(@PathVariable UUID id) {
         MenuItemResponseDTO item = menuItemService.findById(id);
         return ResponseEntity.ok(item);

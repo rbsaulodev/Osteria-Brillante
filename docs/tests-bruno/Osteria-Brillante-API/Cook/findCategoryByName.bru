@@ -1,0 +1,24 @@
+meta {
+  name: findCategoryByName
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/categories/search?name=Bebidas
+  body: none
+  auth: bearer
+}
+
+params:query {
+  name: Bebidas
+}
+
+auth:bearer {
+  token: {{cookToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

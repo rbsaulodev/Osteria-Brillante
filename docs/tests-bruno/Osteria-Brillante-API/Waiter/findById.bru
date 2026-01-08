@@ -1,0 +1,20 @@
+meta {
+  name: findById
+  type: http
+  seq: 5
+}
+
+get {
+  url: {{baseUrl}}/categories/c76325ad-9704-431b-ae23-118323e4362b
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{waiterToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
