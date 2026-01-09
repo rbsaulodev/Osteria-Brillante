@@ -1,0 +1,28 @@
+meta {
+  name: updateMenuDetails
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/menus/aa71bf5a-ddf3-445d-bf15-9d35ac14646e
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "name": "Bruschetta Clássica",
+    "description": "Tomates frescos e manjericão sobre pão rústico.",
+    "categoryId": "d62eb35c-62d0-4782-b22d-3698eeb33038"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

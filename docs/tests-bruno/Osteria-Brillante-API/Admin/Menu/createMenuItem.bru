@@ -1,0 +1,29 @@
+meta {
+  name: createMenuItem
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/menus
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "name": "Tiramisù Clássico",
+    "description": "Camadas de biscoito champagne banhadas em café, creme de mascarpone e cacau.",
+    "price": 28.00,
+    "categoryId": "de45fc8c-c6f5-40ab-9dcc-1d717ec6ff09"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

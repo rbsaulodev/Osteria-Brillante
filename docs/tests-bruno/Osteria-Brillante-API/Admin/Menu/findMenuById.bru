@@ -1,0 +1,20 @@
+meta {
+  name: findMenuById
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/menus/aa71bf5a-ddf3-445d-bf15-9d35ac14646e
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

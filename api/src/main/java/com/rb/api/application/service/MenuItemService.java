@@ -136,6 +136,22 @@ public class MenuItemService {
         return menuItemMapper.toResponseDTO(fromDb);
     }
 
+    @Transactional(readOnly = true)
+    public List<MenuItemResponseDTO> findByCategoryName(String categoryName) {
+        return menuItemRepository.findByCategoryNameIgnoreCase(categoryName)
+                .stream()
+                .map(menuItemMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<MenuItemResponseDTO> findByName(String name) {
+        return menuItemRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(menuItemMapper::toResponseDTO)
+                .collect(Collectors.toList());
+    }
+
     @Transactional
     public void deleteById(UUID id) {
         MenuItem menuItem = findMenuItemEntityById(id);

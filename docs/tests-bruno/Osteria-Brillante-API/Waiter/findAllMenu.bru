@@ -1,0 +1,20 @@
+meta {
+  name: findAllMenu
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/menus
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

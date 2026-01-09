@@ -1,0 +1,26 @@
+meta {
+  name: updateMenuPrice
+  type: http
+  seq: 5
+}
+
+patch {
+  url: {{baseUrl}}/menus/aa71bf5a-ddf3-445d-bf15-9d35ac14646e/price
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "price": 42.00
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

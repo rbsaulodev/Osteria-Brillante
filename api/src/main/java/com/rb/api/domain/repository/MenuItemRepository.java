@@ -11,4 +11,6 @@ import java.util.UUID;
 public interface MenuItemRepository extends JpaRepository<MenuItem, UUID> {
     List<MenuItem> findByCategoryId(UUID categoryId);
     List<MenuItem> findByAvailableTrue();
+    List<MenuItem> findByNameContainingIgnoreCase(String name);
+    List<MenuItem> findByCategoryNameIgnoreCase(String categoryName);
 }
