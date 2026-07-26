@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "Osteria-Brillante-API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

@@ -1,0 +1,27 @@
+meta {
+  name: changeDetailsCustomer
+  type: http
+  seq: 3
+}
+
+patch {
+  url: {{baseUrl}}/users/c7651936-c502-4cdb-b963-71ab7e629e1d
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{customerToken}}
+}
+
+body:json {
+  {
+    "fullName":"Maria Eduarda de Oliveira Cardoso",
+    "email": "bomCliente@gmail.com"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

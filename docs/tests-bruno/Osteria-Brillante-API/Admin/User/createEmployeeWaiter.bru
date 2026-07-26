@@ -1,0 +1,29 @@
+meta {
+  name: createEmployeeWaiter
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/users/employee
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "fullName": "João Faraó",
+    "email": "joao.farao@osteriabrillante.com",
+    "password": "senhaSegura123",
+    "role": "WAITER"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

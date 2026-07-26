@@ -46,7 +46,7 @@ public class TableController {
         return ResponseEntity.status(HttpStatus.CREATED).body(table);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RestaurantTableResponseDTO> update(
             @PathVariable UUID id,
@@ -67,11 +67,17 @@ public class TableController {
     public ResponseEntity<List<RestaurantTableResponseDTO>> findAll(
             @RequestParam(required = false) TableStatus status
     ){
-        List<RestaurantTableResponseDTO> tables = tableService.findAll(status);
-        return ResponseEntity.ok(tables);
+        List<RestaurantTableResponseDTO> table = tableService.findAll(status);
+        return ResponseEntity.ok(table);
+    }
+
+    @GetMapping("/number/{number}")
+    public ResponseEntity<RestaurantTableResponseDTO> findByNumber(@PathVariable int number){
+        return ResponseEntity.ok(tableService.findByNumber(number));
     }
 
     @GetMapping("/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RestaurantTableResponseDTO> findById(@PathVariable UUID id){
         RestaurantTableResponseDTO table = tableService.findById(id);
         return ResponseEntity.ok(table);

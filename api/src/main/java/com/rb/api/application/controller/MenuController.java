@@ -22,7 +22,7 @@ public class MenuController {
     }
 
     @GetMapping
-    @PreAuthorize("permitAll() or hasAnyRole('ADMIN', 'WAITER', 'COOK')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<MenuItemResponseDTO>> findAll(
             @RequestParam(required = false) UUID categoryId,
             @RequestParam(required = false) Boolean available,
@@ -33,7 +33,7 @@ public class MenuController {
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("permitAll() or hasAnyRole('ADMIN', 'WAITER', 'COOK')")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MenuItemResponseDTO> findById(@PathVariable UUID id) {
         MenuItemResponseDTO item = menuItemService.findById(id);
         return ResponseEntity.ok(item);
@@ -64,6 +64,23 @@ public class MenuController {
     ) {
         MenuItemResponseDTO item = menuItemService.updatePrice(id, dto);
         return ResponseEntity.ok(item);
+    }
+
+    @GetMapping("/category/{categoryName}")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<List<MenuItemResponseDTO>> findByCategoryName(
+            @PathVariable String categoryName
+    ) {
+        List<MenuItemResponseDTO> items = menuItemService.findByCategoryName(categoryName);
+        return ResponseEntity.ok(items);
+    }
+
+    @GetMapping("/search")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<List<MenuItemResponseDTO>> findByName(
+            @RequestParam String name
+    ) {
+        return ResponseEntity.ok(menuItemService.findByName(name));
     }
 
     @PatchMapping("/{id}/availability")

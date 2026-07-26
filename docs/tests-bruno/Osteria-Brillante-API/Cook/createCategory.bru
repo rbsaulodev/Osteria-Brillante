@@ -1,0 +1,27 @@
+meta {
+  name: createCategory
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/categories
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{cookToken}}
+}
+
+body:json {
+  {
+    "name": "Dolce e Sobremesas",
+    "description": "Clássicos como Tiramisù e Panna Cotta artesanal."
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

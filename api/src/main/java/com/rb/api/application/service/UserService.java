@@ -30,7 +30,6 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
-
     @Transactional
     public UserResponseDTO changePassword(UUID id, UserChangePasswordRequestDTO dto){
         User user = findEntityById(id);
@@ -42,16 +41,16 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDTO createCustomer(RegisterDTO dto) {
+    public User createUser(RegisterDTO dto) {
         userRepository.findByEmail(dto.email()).ifPresent(user -> {
             throw new EmailAlreadyExistsException("O email informado já está em uso: " + dto.email());
         });
 
         String hashedPassword = passwordEncoder.encode(dto.password());
+
         User newUser = User.createCustomer(dto.fullName(), dto.email(), hashedPassword);
 
-        User savedUser = userRepository.save(newUser);
-        return userMapper.toResponseDTO(savedUser);
+        return userRepository.save(newUser);
     }
 
     @Transactional

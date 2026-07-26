@@ -1,0 +1,20 @@
+meta {
+  name: deleteCategoryById
+  type: http
+  seq: 4
+}
+
+delete {
+  url: {{baseUrl}}/categories/2a387ead-b991-46de-b1f2-931a2500c0d8
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

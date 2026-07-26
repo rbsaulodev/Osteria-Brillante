@@ -37,7 +37,7 @@ public class User implements UserDetails {
     @Column(nullable = false, unique = true)
     private String email;
 
-    @Column(nullable = false)
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
@@ -115,12 +115,12 @@ public class User implements UserDetails {
                     new SimpleGrantedAuthority("ROLE_COOK")
             );
         }
-        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role.name().toUpperCase()));
     }
 
     @Override
     public String getPassword() {
-        return "";
+        return this.passwordHash;
     }
 
     @Override

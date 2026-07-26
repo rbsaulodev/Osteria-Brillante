@@ -41,21 +41,7 @@ public class RestaurantTable {
         }
         this.status = TableStatus.AVAILABLE;
     }
-
-    public void reserve() {
-        if (this.status != TableStatus.AVAILABLE) {
-            throw new IllegalStateException("A mesa " + this.tableNumber + " não está disponível para reserva.");
-        }
-        this.status = TableStatus.RESERVED;
-    }
-
-    public void cancelReservation() {
-        if (this.status != TableStatus.RESERVED) {
-            throw new IllegalStateException("A mesa " + this.tableNumber + " não possui uma reserva para ser cancelada.");
-        }
-        this.status = TableStatus.AVAILABLE;
-    }
-
+    
     public void changeTableNumber(int newNumber) {
         if (newNumber <= 0) {
             throw new IllegalArgumentException("O número da mesa deve ser positivo.");

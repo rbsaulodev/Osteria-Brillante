@@ -1,0 +1,23 @@
+meta {
+  name: loginWaiter
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "joao.farao@osteriabrillante.com",
+    "password": "senhaSegura123"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

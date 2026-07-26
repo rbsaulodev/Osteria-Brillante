@@ -25,26 +25,35 @@ public class CategoryController {
     }
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN', 'WAITER', 'COOK')")
     public ResponseEntity<CategoryResponseDTO> create(@RequestBody @Valid CreateCategoryRequestDTO dto){
         CategoryResponseDTO category = categoryService.create(dto);
         return ResponseEntity.status(HttpStatus.CREATED).body(category);
     }
 
+    @GetMapping("/search")
+    @PreAuthorize("permitAll()")
+    public ResponseEntity<List<CategoryResponseDTO>> findByName(@RequestParam String name) {
+        List<CategoryResponseDTO> categories = categoryService.findByName(name);
+        return ResponseEntity.ok(categories);
+    }
+
     @GetMapping
-    @PreAuthorize("permitAll() or hasAnyRole('ADMIN', 'WAITER', 'COOK')")
+    @PreAuthorize("permitAll()")
     public ResponseEntity<List<CategoryResponseDTO>> findAll(){
         List<CategoryResponseDTO> categories = categoryService.findAll();
         return ResponseEntity.ok(categories);
     }
 
     @GetMapping("/{id}")
-    @PreAuthorize("permitAll() or hasAnyRole('ADMIN', 'WAITER', 'COOK')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'WAITER', 'COOK')")
     public ResponseEntity<CategoryResponseDTO> findById(@PathVariable UUID id){
         CategoryResponseDTO category = categoryService.findById(id);
         return ResponseEntity.ok(category);
     }
 
-    @PutMapping("/{id}")
+    @PatchMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'WAITER', 'COOK')")
     public ResponseEntity<CategoryResponseDTO> update(
             @PathVariable UUID id,
             @RequestBody @Valid UpdateCategoryRequestDTO dto
@@ -54,6 +63,7 @@ public class CategoryController {
     }
 
     @DeleteMapping("/{id}")
+    @PreAuthorize("hasAnyRole('ADMIN')")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id){
         categoryService.deleteById(id);
         return ResponseEntity.noContent().build();

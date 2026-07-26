@@ -1,0 +1,20 @@
+meta {
+  name: occupyTable
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{baseUrl}}/tables/af594b87-8d3b-4ea8-9587-6896b78ccfbc/occupy
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{waiterToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

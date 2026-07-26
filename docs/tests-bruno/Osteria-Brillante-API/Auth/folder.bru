@@ -1,0 +1,27 @@
+meta {
+  name: Auth
+  seq: 4
+}
+
+auth {
+  mode: inherit
+}
+
+script:post-response {
+  const data = res.getBody();
+  
+  if (res.getStatus() === 200 && data.token) {
+    const role = data.role;
+    const token = data.token;
+  
+    if (role === 'ADMIN') {
+      bru.setEnvVar("adminToken", token);
+    } else if (role === 'COOK') {
+      bru.setEnvVar("cookToken", token);
+    } else if (role === 'WAITER') {
+      bru.setEnvVar("waiterToken", token);
+    } else if (role === 'CUSTOMER') {
+      bru.setEnvVar("customerToken", token);
+    }
+  }
+}

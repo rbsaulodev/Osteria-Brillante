@@ -1,0 +1,20 @@
+meta {
+  name: findMenuByCategoryName
+  type: http
+  seq: 6
+}
+
+get {
+  url: {{baseUrl}}/menus/category/Bebidas Geladas
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

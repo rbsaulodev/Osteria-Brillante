@@ -1,0 +1,25 @@
+meta {
+  name: registerUser
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/auth/register
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "fullName": "Maria Oliveira",
+    "email": "maria.cliente@gmail.com",
+    "password": "senhaSegura789",
+    "role": "CUSTOMER"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

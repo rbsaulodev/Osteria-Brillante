@@ -1,0 +1,26 @@
+meta {
+  name: changeUserRole
+  type: http
+  seq: 1
+}
+
+patch {
+  url: {{baseUrl}}/users/bd5f6043-ffd8-4060-b09e-6ed04ac29f44/role
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "newRole": "WAITER"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

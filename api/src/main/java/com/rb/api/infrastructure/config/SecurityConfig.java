@@ -17,34 +17,23 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 @Configuration
 @EnableWebSecurity
-@EnableMethodSecurity(prePostEnabled = true)
+@EnableMethodSecurity
 public class SecurityConfig {
 
-    private final SecurityFilter securityFilter;
-
-    public SecurityConfig(SecurityFilter securityFilter) {
-        this.securityFilter = securityFilter;
-    }
-
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, SecurityFilter securityFilter) throws Exception {
         return httpSecurity
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/register").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/menu", "/tables/available").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/menu", "/tables/**").permitAll()
 
-                        .requestMatchers("/users/**", "/menu/**", "/tables/**").hasRole("ADMIN")
-
-                        .requestMatchers(HttpMethod.GET, "/orders/kitchen").hasAnyRole("ADMIN", "COOK")
-                        .requestMatchers(HttpMethod.PATCH, "/orders/{id}/status/cook").hasAnyRole("ADMIN", "COOK")
-
-                        .requestMatchers(HttpMethod.GET, "/orders").hasAnyRole("ADMIN", "WAITER")
-                        .requestMatchers(HttpMethod.PATCH, "/orders/{id}/status/waiter").hasAnyRole("ADMIN", "WAITER")
-
-                        .requestMatchers(HttpMethod.POST, "/orders").hasAnyRole("ADMIN", "CUSTOMER")
-                        .requestMatchers("/reservations/**").hasAnyRole("ADMIN", "CUSTOMER")
+                        .requestMatchers("/users/**").authenticated()
+                        .requestMatchers("/tables/**").authenticated()
+                        .requestMatchers("/orders/**").authenticated()
+                        .requestMatchers("/reservations/**").authenticated()
+                        .requestMatchers("/menu/**").authenticated()
 
                         .anyRequest().authenticated()
                 )

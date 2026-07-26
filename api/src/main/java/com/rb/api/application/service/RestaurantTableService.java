@@ -42,20 +42,6 @@ public class RestaurantTableService {
     }
 
     @Transactional
-    public RestaurantTableResponseDTO reserveTable(UUID id) {
-        RestaurantTable table = findEntityById(id);
-        table.reserve();
-        return restaurantTableMapper.toResponseDTO(table);
-    }
-
-    @Transactional
-    public RestaurantTableResponseDTO cancelReservationTable(UUID id) {
-        RestaurantTable table = findEntityById(id);
-        table.cancelReservation();
-        return restaurantTableMapper.toResponseDTO(table);
-    }
-
-    @Transactional
     public RestaurantTableResponseDTO create(CreateRestaurantTableRequestDTO dto){
         RestaurantTable newTable = restaurantTableMapper.toEntity(dto);
         RestaurantTable savedTable = restaurantTableRepository.save(newTable);
@@ -100,6 +86,12 @@ public class RestaurantTableService {
                 .orElseThrow(() -> new ResourceNotFoundException("Mesa não encontrada com o ID: " + id));
     }
 
+    @Transactional(readOnly = true)
+    public RestaurantTableResponseDTO findByNumber(int tableNumber) {
+        return restaurantTableRepository.findByTableNumber(tableNumber)
+                .map(restaurantTableMapper::toResponseDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Mesa não encontrada com o número: " + tableNumber));
+    }
     private RestaurantTable findEntityById(UUID id) {
         return restaurantTableRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Mesa não encontrada com o ID: " + id));

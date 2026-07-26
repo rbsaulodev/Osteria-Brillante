@@ -1,0 +1,24 @@
+meta {
+  name: findByName
+  type: http
+  seq: 7
+}
+
+get {
+  url: {{baseUrl}}/menus/search?name=limonata
+  body: none
+  auth: bearer
+}
+
+params:query {
+  name: limonata
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

@@ -1,0 +1,20 @@
+meta {
+  name: findAllUsers
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/users
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

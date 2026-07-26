@@ -3,6 +3,7 @@ package com.rb.api.application.service;
 import com.rb.api.application.dto.category.CategoryResponseDTO;
 import com.rb.api.application.dto.category.CreateCategoryRequestDTO;
 import com.rb.api.application.dto.category.UpdateCategoryRequestDTO;
+import com.rb.api.application.exception.BusinessException;
 import com.rb.api.application.exception.ResourceNotFoundException;
 import com.rb.api.application.mapper.CategoryMapper;
 import com.rb.api.domain.model.Category;
@@ -28,9 +29,13 @@ public class CategoryService {
 
     @Transactional
     public CategoryResponseDTO create(CreateCategoryRequestDTO dto) {
-        Category newCategory = categoryMapper.toEntity(dto);
-        Category savedCategory = categoryRepository.save(newCategory);
-        return categoryMapper.toResponseDTO(savedCategory);
+        categoryRepository.findByNameIgnoreCase(dto.name())
+                .ifPresent(c -> {
+                    throw new BusinessException("Já existe uma categoria cadastrada com o nome: " + dto.name());
+                });
+
+        Category category = categoryMapper.toEntity(dto);
+        return categoryMapper.toResponseDTO(categoryRepository.save(category));
     }
 
     @Transactional(readOnly = true)
@@ -59,6 +64,14 @@ public class CategoryService {
     public void deleteById(UUID id){
         Category categoryToDelete = findEntityById(id);
         categoryRepository.delete(categoryToDelete);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryResponseDTO> findByName(String name) {
+        return categoryRepository.findByNameContainingIgnoreCase(name)
+                .stream()
+                .map(categoryMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     private Category findEntityById(UUID id) {

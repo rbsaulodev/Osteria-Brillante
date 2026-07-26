@@ -1,0 +1,20 @@
+meta {
+  name: findUserById
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/users/c7651936-c502-4cdb-b963-71ab7e629e1d
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

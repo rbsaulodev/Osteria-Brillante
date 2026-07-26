@@ -8,7 +8,7 @@ public record ReservationResponseDTO(
         UUID id,
         UUID customerId,
         UUID tableId,
-        String tableName,
+        Integer tableNumber,
         LocalDateTime reservationTime,
         int partySize,
         ReservationStatus status,

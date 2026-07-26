@@ -1,0 +1,26 @@
+meta {
+  name: setMenuAvailability
+  type: http
+  seq: 8
+}
+
+patch {
+  url: {{baseUrl}}/menus/7cde006e-8bb1-4c76-b940-bb03a3470783/availability
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{adminToken}}
+}
+
+body:json {
+  {
+    "isAvailable": false
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}

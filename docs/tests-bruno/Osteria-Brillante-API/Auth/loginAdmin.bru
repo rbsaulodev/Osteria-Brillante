@@ -1,0 +1,23 @@
+meta {
+  name: loginAdmin
+  type: http
+  seq: 7
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: inherit
+}
+
+body:json {
+  {
+    "email": "admin@osteriabrillante.com",
+    "password": "admin123"
+  }
+}
+
+settings {
+  encodeUrl: true
+  timeout: 0
+}
